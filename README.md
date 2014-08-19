@@ -1,5 +1,5 @@
 
-# Lockit CouchDB adapter for Koa.
+# Lockit CouchDB adapter for Koa
 
 work in progress ...
 
