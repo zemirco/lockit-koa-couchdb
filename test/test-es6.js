@@ -61,4 +61,15 @@ describe('lockit couchdb adapter for koa', function(done) {
     })();
   });
 
+  it('should return an error when remove() cannot find a user', function(done) {
+    co(function *() {
+      try {
+        var res = yield adapter.remove('john');
+      } catch(err) {
+        assert(err);
+        done();
+      }
+    })();
+  });
+
 });
