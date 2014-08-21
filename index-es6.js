@@ -74,9 +74,9 @@ class Adapter {
 
     // create user document in _users db
     var user = new User(name, email, password);
-    var res = yield this._insert(user, 'org.couchdb.user:' + name);
-    var doc = yield this._get(res[0].id);
-    return doc[0];
+    var [res, headers] = yield this._insert(user, 'org.couchdb.user:' + name);
+    var [doc, headers] = yield this._get(res.id);
+    return doc;
   }
 
 
@@ -86,12 +86,12 @@ class Adapter {
    */
   *find(match, query) {
     if (match === 'name') {
-      var user = yield this._get('org.couchdb.user:' + query);
-      return user[0];
+      var [doc, headers] = yield this._get('org.couchdb.user:' + query);
+      return doc;
     }
-    var user = yield this._view('lockit-user', match, {key: query});
-    if (!user[0].rows.length) return null
-    return user[0].rows[0].value;
+    var [res, headers] = yield this._view('lockit-user', match, {key: query});
+    if (!res.rows.length) return null
+    return res.rows[0].value;
   }
 
 
@@ -100,9 +100,9 @@ class Adapter {
    * Update existing user in databse.
    */
   *update(user) {
-    var updated = yield this._insert(user);
-    var _user = yield this._get(updated.id);
-    return _user;
+    var [res, headers] = yield this._insert(user);
+    var [doc, headers] = yield this._get(res.id);
+    return doc;
   }
 
 
@@ -112,14 +112,14 @@ class Adapter {
    */
   *remove(name) {
     // remove user from _users database
-    var user = yield this._get('org.couchdb.user:' + name);
+    var [doc, headers] = yield this._get('org.couchdb.user:' + name);
     var destroy = thunkify(this.nano.use('_users').destroy);
-    var res = yield destroy(user[0]._id, user[0]._rev);
+    var res = yield destroy(doc._id, doc._rev);
 
     // remove per user database
     var smash = thunkify(this.nano.db.destroy);
-    var result = yield smash(name);
-    return [res[0], result[0]];
+    var [res, headers] = yield smash(name);
+    return res;
   }
 
 }
