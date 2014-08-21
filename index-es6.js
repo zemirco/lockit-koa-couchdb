@@ -44,10 +44,15 @@ class Adapter {
   /**
    * Constructor function.
    */
-  constructor() {
-    this.nano = nano('http://127.0.0.1:5984/');
-    // _users database functions
-    var _users = this.nano.use('_users');
+  constructor(config) {
+    var url = config.db.url || config.db;
+    var usersDbName = config.db.usersDbName || '_users';
+    this.prefix = config.db.prefix || 'lockit/';
+    this.nano = nano({
+      url: url,
+      request_defaults: config.request_defaults
+    });
+    var _users = this.nano.use(usersDbName);
     this._insert = thunkify(_users.insert);
     this._get = thunkify(_users.get);
     this._view = thunkify(_users.view);
@@ -61,7 +66,7 @@ class Adapter {
   *save(name, email, password) {
     // create per user database
     var create = thunkify(this.nano.db.create);
-    var db = yield create(name);
+    yield create(this.prefix + name);
 
     // create security document
     var securityDoc = {
@@ -69,8 +74,8 @@ class Adapter {
         names : [name]
       }
     }
-    var insert = thunkify(this.nano.use(name).insert);
-    var security = yield insert(securityDoc, '_security');
+    var insert = thunkify(this.nano.use(this.prefix + name).insert);
+    yield insert(securityDoc, '_security');
 
     // create user document in _users db
     var user = new User(name, email, password);
@@ -114,11 +119,11 @@ class Adapter {
     // remove user from _users database
     var [doc, headers] = yield this._get('org.couchdb.user:' + name);
     var destroy = thunkify(this.nano.use('_users').destroy);
-    var res = yield destroy(doc._id, doc._rev);
+    yield destroy(doc._id, doc._rev);
 
     // remove per user database
     var smash = thunkify(this.nano.db.destroy);
-    var [res, headers] = yield smash(name);
+    var [res, headers] = yield smash(this.prefix + name);
     return res;
   }
 
