@@ -2425,9 +2425,15 @@ System.register("index-es6", [], function() {
     this.failedLoginAttempts = 0;
   };
   ($traceurRuntime.createClass)(User, {}, {});
-  var Adapter = function Adapter() {
-    this.nano = nano('http://127.0.0.1:5984/');
-    var _users = this.nano.use('_users');
+  var Adapter = function Adapter(config) {
+    var url = config.db.url || config.db;
+    var usersDbName = config.db.usersDbName || '_users';
+    this.prefix = config.db.prefix || 'lockit/';
+    this.nano = nano({
+      url: url,
+      request_defaults: config.request_defaults
+    });
+    var _users = this.nano.use(usersDbName);
     this._insert = thunkify(_users.insert);
     this._get = thunkify(_users.get);
     this._view = thunkify(_users.view);
@@ -2435,10 +2441,8 @@ System.register("index-es6", [], function() {
   ($traceurRuntime.createClass)(Adapter, {
     save: $traceurRuntime.initGeneratorFunction(function $__2(name, email, password) {
       var create,
-          db,
           securityDoc,
           insert,
-          security,
           user,
           $__1,
           res,
@@ -2464,21 +2468,21 @@ System.register("index-es6", [], function() {
               break;
             case 28:
               $ctx.state = 2;
-              return create(name);
+              return create(this.prefix + name);
             case 2:
-              db = $ctx.sent;
+              $ctx.maybeThrow();
               $ctx.state = 4;
               break;
             case 4:
               securityDoc = {members: {names: [name]}};
-              insert = thunkify(this.nano.use(name).insert);
+              insert = thunkify(this.nano.use(this.prefix + name).insert);
               $ctx.state = 30;
               break;
             case 30:
               $ctx.state = 6;
               return insert(securityDoc, '_security');
             case 6:
-              security = $ctx.sent;
+              $ctx.maybeThrow();
               $ctx.state = 8;
               break;
             case 8:
@@ -2690,8 +2694,8 @@ System.register("index-es6", [], function() {
           doc,
           headers,
           destroy,
-          res,
           smash,
+          res,
           $__38,
           $__39,
           $__40,
@@ -2700,7 +2704,8 @@ System.register("index-es6", [], function() {
           $__43,
           $__44,
           $__45,
-          $__46;
+          $__46,
+          $__47;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
         while (true)
           switch ($ctx.state) {
@@ -2732,7 +2737,7 @@ System.register("index-es6", [], function() {
               $ctx.state = 10;
               return destroy(doc._id, doc._rev);
             case 10:
-              res = $ctx.sent;
+              $ctx.maybeThrow();
               $ctx.state = 12;
               break;
             case 12:
@@ -2740,22 +2745,23 @@ System.register("index-es6", [], function() {
               $ctx.state = 26;
               break;
             case 26:
-              $__43 = smash(name);
+              $__43 = this.prefix;
+              $__44 = smash($__43 + name);
               $ctx.state = 18;
               break;
             case 18:
               $ctx.state = 14;
-              return $__43;
+              return $__44;
             case 14:
-              $__44 = $ctx.sent;
+              $__45 = $ctx.sent;
               $ctx.state = 16;
               break;
             case 16:
-              $__1 = $__44;
-              $__45 = $__1[0];
-              res = $__45;
-              $__46 = $__1[1];
-              headers = $__46;
+              $__1 = $__45;
+              $__46 = $__1[0];
+              res = $__46;
+              $__47 = $__1[1];
+              headers = $__47;
               $ctx.state = 20;
               break;
             case 20:

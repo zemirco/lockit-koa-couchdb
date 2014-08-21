@@ -2569,6 +2569,44 @@ System.register("test-es6", [], function() {
         }, $__0, this);
       }))();
     });
+    it('should return an error when remove() cannot find a user', function(done) {
+      co($traceurRuntime.initGeneratorFunction(function $__0() {
+        var res,
+            err;
+        return $traceurRuntime.createGeneratorInstance(function($ctx) {
+          while (true)
+            switch ($ctx.state) {
+              case 0:
+                $ctx.pushTry(5, null);
+                $ctx.state = 8;
+                break;
+              case 8:
+                $ctx.state = 2;
+                return adapter.remove('john');
+              case 2:
+                res = $ctx.sent;
+                $ctx.state = 4;
+                break;
+              case 4:
+                $ctx.popTry();
+                $ctx.state = -2;
+                break;
+              case 5:
+                $ctx.popTry();
+                err = $ctx.storedException;
+                $ctx.state = 11;
+                break;
+              case 11:
+                assert(err);
+                done();
+                $ctx.state = -2;
+                break;
+              default:
+                return $ctx.end();
+            }
+        }, $__0, this);
+      }))();
+    });
   });
   return {};
 });
