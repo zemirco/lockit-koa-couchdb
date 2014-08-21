@@ -2433,23 +2433,36 @@ System.register("index-es6", [], function() {
     this._view = thunkify(_users.view);
   };
   ($traceurRuntime.createClass)(Adapter, {
-    save: $traceurRuntime.initGeneratorFunction(function $__1(name, email, password) {
+    save: $traceurRuntime.initGeneratorFunction(function $__2(name, email, password) {
       var create,
           db,
           securityDoc,
           insert,
           security,
           user,
+          $__1,
           res,
-          doc;
+          headers,
+          doc,
+          $__3,
+          $__4,
+          $__5,
+          $__6,
+          $__7,
+          $__8,
+          $__9,
+          $__10,
+          $__11,
+          $__12,
+          $__13;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
         while (true)
           switch ($ctx.state) {
             case 0:
               create = thunkify(this.nano.db.create);
-              $ctx.state = 20;
+              $ctx.state = 28;
               break;
-            case 20:
+            case 28:
               $ctx.state = 2;
               return create(name);
             case 2:
@@ -2459,9 +2472,9 @@ System.register("index-es6", [], function() {
             case 4:
               securityDoc = {members: {names: [name]}};
               insert = thunkify(this.nano.use(name).insert);
-              $ctx.state = 22;
+              $ctx.state = 30;
               break;
-            case 22:
+            case 30:
               $ctx.state = 6;
               return insert(securityDoc, '_security');
             case 6:
@@ -2470,66 +2483,51 @@ System.register("index-es6", [], function() {
               break;
             case 8:
               user = new User(name, email, password);
-              $ctx.state = 24;
+              $ctx.state = 32;
               break;
-            case 24:
+            case 32:
+              $__3 = this._insert;
+              $__4 = $__3.call(this, user, 'org.couchdb.user:' + name);
+              $ctx.state = 14;
+              break;
+            case 14:
               $ctx.state = 10;
-              return this._insert(user, 'org.couchdb.user:' + name);
+              return $__4;
             case 10:
-              res = $ctx.sent;
+              $__5 = $ctx.sent;
               $ctx.state = 12;
               break;
             case 12:
-              $ctx.state = 14;
-              return this._get(res[0].id);
-            case 14:
-              doc = $ctx.sent;
+              $__1 = $__5;
+              $__6 = $__1[0];
+              res = $__6;
+              $__7 = $__1[1];
+              headers = $__7;
               $ctx.state = 16;
               break;
             case 16:
-              $ctx.returnValue = doc[0];
-              $ctx.state = -2;
+              $__8 = this._get;
+              $__9 = res.id;
+              $__10 = $__8.call(this, $__9);
+              $ctx.state = 22;
               break;
-            default:
-              return $ctx.end();
-          }
-      }, $__1, this);
-    }),
-    find: $traceurRuntime.initGeneratorFunction(function $__2(match, query) {
-      var user;
-      return $traceurRuntime.createGeneratorInstance(function($ctx) {
-        while (true)
-          switch ($ctx.state) {
-            case 0:
-              $ctx.state = (match === 'name') ? 1 : 6;
+            case 22:
+              $ctx.state = 18;
+              return $__10;
+            case 18:
+              $__11 = $ctx.sent;
+              $ctx.state = 20;
               break;
-            case 1:
-              $ctx.state = 2;
-              return this._get('org.couchdb.user:' + query);
-            case 2:
-              user = $ctx.sent;
-              $ctx.state = 4;
+            case 20:
+              $__1 = $__11;
+              $__12 = $__1[0];
+              doc = $__12;
+              $__13 = $__1[1];
+              headers = $__13;
+              $ctx.state = 24;
               break;
-            case 4:
-              $ctx.returnValue = user[0];
-              $ctx.state = -2;
-              break;
-            case 6:
-              $ctx.state = 9;
-              return this._view('lockit-user', match, {key: query});
-            case 9:
-              user = $ctx.sent;
-              $ctx.state = 11;
-              break;
-            case 11:
-              $ctx.state = (!user[0].rows.length) ? 12 : 13;
-              break;
-            case 12:
-              $ctx.returnValue = null;
-              $ctx.state = -2;
-              break;
-            case 13:
-              $ctx.returnValue = user[0].rows[0].value;
+            case 24:
+              $ctx.returnValue = doc;
               $ctx.state = -2;
               break;
             default:
@@ -2537,81 +2535,237 @@ System.register("index-es6", [], function() {
           }
       }, $__2, this);
     }),
-    update: $traceurRuntime.initGeneratorFunction(function $__3(user) {
-      var updated,
-          _user;
+    find: $traceurRuntime.initGeneratorFunction(function $__14(match, query) {
+      var $__1,
+          doc,
+          headers,
+          res,
+          $__15,
+          $__16,
+          $__17,
+          $__18,
+          $__19,
+          $__20,
+          $__21,
+          $__22,
+          $__23,
+          $__24;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
         while (true)
           switch ($ctx.state) {
             case 0:
+              $ctx.state = (match === 'name') ? 5 : 10;
+              break;
+            case 5:
+              $__15 = this._get;
+              $__16 = $__15.call(this, 'org.couchdb.user:' + query);
+              $ctx.state = 6;
+              break;
+            case 6:
               $ctx.state = 2;
-              return this._insert(user);
+              return $__16;
             case 2:
-              updated = $ctx.sent;
+              $__17 = $ctx.sent;
               $ctx.state = 4;
               break;
             case 4:
-              $ctx.state = 6;
-              return this._get(updated.id);
-            case 6:
-              _user = $ctx.sent;
+              $__1 = $__17;
+              $__18 = $__1[0];
+              doc = $__18;
+              $__19 = $__1[1];
+              headers = $__19;
               $ctx.state = 8;
               break;
             case 8:
-              $ctx.returnValue = _user;
+              $ctx.returnValue = doc;
+              $ctx.state = -2;
+              break;
+            case 10:
+              $__20 = this._view;
+              $__21 = $__20.call(this, 'lockit-user', match, {key: query});
+              $ctx.state = 17;
+              break;
+            case 17:
+              $ctx.state = 13;
+              return $__21;
+            case 13:
+              $__22 = $ctx.sent;
+              $ctx.state = 15;
+              break;
+            case 15:
+              $__1 = $__22;
+              $__23 = $__1[0];
+              res = $__23;
+              $__24 = $__1[1];
+              headers = $__24;
+              $ctx.state = 19;
+              break;
+            case 19:
+              $ctx.state = (!res.rows.length) ? 20 : 21;
+              break;
+            case 20:
+              $ctx.returnValue = null;
+              $ctx.state = -2;
+              break;
+            case 21:
+              $ctx.returnValue = res.rows[0].value;
               $ctx.state = -2;
               break;
             default:
               return $ctx.end();
           }
-      }, $__3, this);
+      }, $__14, this);
     }),
-    remove: $traceurRuntime.initGeneratorFunction(function $__4(name) {
-      var user,
-          destroy,
+    update: $traceurRuntime.initGeneratorFunction(function $__25(user) {
+      var $__1,
           res,
-          smash,
-          result;
+          headers,
+          doc,
+          $__26,
+          $__27,
+          $__28,
+          $__29,
+          $__30,
+          $__31,
+          $__32,
+          $__33,
+          $__34,
+          $__35,
+          $__36;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
         while (true)
           switch ($ctx.state) {
             case 0:
+              $__26 = this._insert;
+              $__27 = $__26.call(this, user);
+              $ctx.state = 6;
+              break;
+            case 6:
               $ctx.state = 2;
-              return this._get('org.couchdb.user:' + name);
+              return $__27;
             case 2:
-              user = $ctx.sent;
+              $__28 = $ctx.sent;
               $ctx.state = 4;
               break;
             case 4:
-              destroy = thunkify(this.nano.use('_users').destroy);
-              $ctx.state = 16;
-              break;
-            case 16:
-              $ctx.state = 6;
-              return destroy(user[0]._id, user[0]._rev);
-            case 6:
-              res = $ctx.sent;
+              $__1 = $__28;
+              $__29 = $__1[0];
+              res = $__29;
+              $__30 = $__1[1];
+              headers = $__30;
               $ctx.state = 8;
               break;
             case 8:
-              smash = thunkify(this.nano.db.destroy);
-              $ctx.state = 18;
+              $__31 = this._get;
+              $__32 = res.id;
+              $__33 = $__31.call(this, $__32);
+              $ctx.state = 14;
               break;
-            case 18:
+            case 14:
               $ctx.state = 10;
-              return smash(name);
+              return $__33;
             case 10:
-              result = $ctx.sent;
+              $__34 = $ctx.sent;
               $ctx.state = 12;
               break;
             case 12:
-              $ctx.returnValue = [res[0], result[0]];
+              $__1 = $__34;
+              $__35 = $__1[0];
+              doc = $__35;
+              $__36 = $__1[1];
+              headers = $__36;
+              $ctx.state = 16;
+              break;
+            case 16:
+              $ctx.returnValue = doc;
               $ctx.state = -2;
               break;
             default:
               return $ctx.end();
           }
-      }, $__4, this);
+      }, $__25, this);
+    }),
+    remove: $traceurRuntime.initGeneratorFunction(function $__37(name) {
+      var $__1,
+          doc,
+          headers,
+          destroy,
+          res,
+          smash,
+          $__38,
+          $__39,
+          $__40,
+          $__41,
+          $__42,
+          $__43,
+          $__44,
+          $__45,
+          $__46;
+      return $traceurRuntime.createGeneratorInstance(function($ctx) {
+        while (true)
+          switch ($ctx.state) {
+            case 0:
+              $__38 = this._get;
+              $__39 = $__38.call(this, 'org.couchdb.user:' + name);
+              $ctx.state = 6;
+              break;
+            case 6:
+              $ctx.state = 2;
+              return $__39;
+            case 2:
+              $__40 = $ctx.sent;
+              $ctx.state = 4;
+              break;
+            case 4:
+              $__1 = $__40;
+              $__41 = $__1[0];
+              doc = $__41;
+              $__42 = $__1[1];
+              headers = $__42;
+              $ctx.state = 8;
+              break;
+            case 8:
+              destroy = thunkify(this.nano.use('_users').destroy);
+              $ctx.state = 24;
+              break;
+            case 24:
+              $ctx.state = 10;
+              return destroy(doc._id, doc._rev);
+            case 10:
+              res = $ctx.sent;
+              $ctx.state = 12;
+              break;
+            case 12:
+              smash = thunkify(this.nano.db.destroy);
+              $ctx.state = 26;
+              break;
+            case 26:
+              $__43 = smash(name);
+              $ctx.state = 18;
+              break;
+            case 18:
+              $ctx.state = 14;
+              return $__43;
+            case 14:
+              $__44 = $ctx.sent;
+              $ctx.state = 16;
+              break;
+            case 16:
+              $__1 = $__44;
+              $__45 = $__1[0];
+              res = $__45;
+              $__46 = $__1[1];
+              headers = $__46;
+              $ctx.state = 20;
+              break;
+            case 20:
+              $ctx.returnValue = res;
+              $ctx.state = -2;
+              break;
+            default:
+              return $ctx.end();
+          }
+      }, $__37, this);
     })
   }, {});
   module.exports = Adapter;

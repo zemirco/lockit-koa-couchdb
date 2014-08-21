@@ -2509,6 +2509,66 @@ System.register("test-es6", [], function() {
         }, $__0, this);
       }))();
     });
+    it('should update an existing user', function(done) {
+      co($traceurRuntime.initGeneratorFunction(function $__0() {
+        var user,
+            updatedUser;
+        return $traceurRuntime.createGeneratorInstance(function($ctx) {
+          while (true)
+            switch ($ctx.state) {
+              case 0:
+                $ctx.state = 2;
+                return adapter.find('name', 'john');
+              case 2:
+                user = $ctx.sent;
+                $ctx.state = 4;
+                break;
+              case 4:
+                user.updated = true;
+                $ctx.state = 10;
+                break;
+              case 10:
+                $ctx.state = 6;
+                return adapter.update(user);
+              case 6:
+                updatedUser = $ctx.sent;
+                $ctx.state = 8;
+                break;
+              case 8:
+                assert.equal(updatedUser.updated, true);
+                done();
+                $ctx.state = -2;
+                break;
+              default:
+                return $ctx.end();
+            }
+        }, $__0, this);
+      }))();
+    });
+    it('should remove a user', function(done) {
+      co($traceurRuntime.initGeneratorFunction(function $__0() {
+        var res;
+        return $traceurRuntime.createGeneratorInstance(function($ctx) {
+          while (true)
+            switch ($ctx.state) {
+              case 0:
+                $ctx.state = 2;
+                return adapter.remove('john');
+              case 2:
+                res = $ctx.sent;
+                $ctx.state = 4;
+                break;
+              case 4:
+                assert.equal(res.ok, true);
+                done();
+                $ctx.state = -2;
+                break;
+              default:
+                return $ctx.end();
+            }
+        }, $__0, this);
+      }))();
+    });
   });
   return {};
 });
