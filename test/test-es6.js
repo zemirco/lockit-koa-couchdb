@@ -43,4 +43,22 @@ describe('lockit couchdb adapter for koa', function(done) {
     })();
   });
 
+  it('should update an existing user', function(done) {
+    co(function *() {
+      var user = yield adapter.find('name', 'john');
+      user.updated = true;
+      var updatedUser = yield adapter.update(user);
+      assert.equal(updatedUser.updated, true);
+      done();
+    })();
+  });
+
+  it('should remove a user', function(done) {
+    co(function *() {
+      var res = yield adapter.remove('john');
+      assert.equal(res.ok, true);
+      done();
+    })();
+  });
+
 });
