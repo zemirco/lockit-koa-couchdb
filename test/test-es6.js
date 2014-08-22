@@ -1,9 +1,12 @@
 
 var assert = require('assert');
+var thunkify = require('thunkify');
 var co = require('co');
+
 var config = require('./config');
 var Adapter = require('..');
 var adapter = new Adapter(config);
+var nano = require('nano')(config.db);
 
 describe('lockit couchdb adapter for koa', function(done) {
 
@@ -17,6 +20,32 @@ describe('lockit couchdb adapter for koa', function(done) {
       token = user.signupToken;
       done();
     })();
+  });
+
+  it('should use the custom prefix', function(done) {
+    var config = {
+      db: {
+        url: 'http://127.0.0.1:5984/',
+        prefix: 'custom/'
+      },
+      signup: {
+        tokenExpiration: '1 day'
+      }
+    }
+    var adapter = new Adapter(config);
+    co(function *() {
+      yield adapter.save('prefix', 'prefix@email.com', 'secret');
+      var get = thunkify(nano.db.get);
+      var [db, headers] = yield get('custom/prefix');
+      assert.equal(headers['status-code'], 200);
+      done();
+    })();
+    after(function(done) {
+      co(function *() {
+        yield adapter.remove('prefix');
+        done();
+      })();
+    })
   });
 
   it('should find a user by name', function(done) {
