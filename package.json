@@ -1,26 +1,24 @@
 {
   "name": "lockit-koa-couchdb",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Lockit CouchDB adapter for Koa",
   "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
   "dependencies": {
-    "ms": "~0.6.2",
     "co": "~3.1.0",
+    "couchdb-seed-design": "0.0.5",
     "moment": "~2.8.1",
+    "ms": "~0.6.2",
+    "nano": "~5.10.0",
     "node-uuid": "~1.4.1",
     "thunkify": "~2.1.2",
-    "uuid": "~1.4.1",
-    "traceur": "~0.0.58",
-    "nano": "~5.10.0"
+    "uuid": "~1.4.1"
   },
   "devDependencies": {
-    "mocha": "^1.21.4"
+    "mocha": "^1.21.4",
+    "traceur": "0.0.58"
   },
   "scripts": {
-    "test": "npm run compile-test && mocha --reporter spec test/test.js",
+    "test": "npm run compile-test && ./node_modules/mocha/bin/mocha --reporter spec test/test.js",
     "compile": "./node_modules/.bin/traceur --out index.js --script ./node_modules/traceur/bin/traceur-runtime.js index-es6.js",
     "compile-test": "./node_modules/.bin/traceur --out test/test.js --script ./node_modules/traceur/bin/traceur-runtime.js test/test-es6.js"
   },
@@ -31,12 +29,9 @@
   "keywords": [
     "lockit",
     "couchdb",
+    "adapter",
     "koa"
   ],
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/zemirco/lockit-koa-couchdb/issues"
-  },
-  "homepage": "https://github.com/zemirco/lockit-koa-couchdb"
+  "author": "Mirco Zeiss <mirco.zeiss@gmail.com>",
+  "license": "MIT"
 }
