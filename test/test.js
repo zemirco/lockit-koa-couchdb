@@ -2405,14 +2405,16 @@ System.register("test-es6", [], function() {
   "use strict";
   var __moduleName = "test-es6";
   var assert = require('assert');
+  var thunkify = require('thunkify');
   var co = require('co');
   var config = require('./config');
   var Adapter = require('..');
   var adapter = new Adapter(config);
+  var nano = require('nano')(config.db);
   describe('lockit couchdb adapter for koa', function(done) {
     var token = '';
     it('should create a new user', function(done) {
-      co($traceurRuntime.initGeneratorFunction(function $__0() {
+      co($traceurRuntime.initGeneratorFunction(function $__1() {
         var user;
         return $traceurRuntime.createGeneratorInstance(function($ctx) {
           while (true)
@@ -2434,11 +2436,95 @@ System.register("test-es6", [], function() {
               default:
                 return $ctx.end();
             }
-        }, $__0, this);
+        }, $__1, this);
       }))();
     });
+    it('should use the custom prefix', function(done) {
+      var config = {
+        db: {
+          url: 'http://127.0.0.1:5984/',
+          prefix: 'custom/'
+        },
+        signup: {tokenExpiration: '1 day'}
+      };
+      var adapter = new Adapter(config);
+      co($traceurRuntime.initGeneratorFunction(function $__1() {
+        var get,
+            $__0,
+            db,
+            headers,
+            $__2,
+            $__3,
+            $__4,
+            $__5;
+        return $traceurRuntime.createGeneratorInstance(function($ctx) {
+          while (true)
+            switch ($ctx.state) {
+              case 0:
+                $ctx.state = 2;
+                return adapter.save('prefix', 'prefix@email.com', 'secret');
+              case 2:
+                $ctx.maybeThrow();
+                $ctx.state = 4;
+                break;
+              case 4:
+                get = thunkify(nano.db.get);
+                $ctx.state = 14;
+                break;
+              case 14:
+                $__2 = get('custom/prefix');
+                $ctx.state = 10;
+                break;
+              case 10:
+                $ctx.state = 6;
+                return $__2;
+              case 6:
+                $__3 = $ctx.sent;
+                $ctx.state = 8;
+                break;
+              case 8:
+                $__0 = $__3;
+                $__4 = $__0[0];
+                db = $__4;
+                $__5 = $__0[1];
+                headers = $__5;
+                $ctx.state = 12;
+                break;
+              case 12:
+                assert.equal(headers['status-code'], 200);
+                done();
+                $ctx.state = -2;
+                break;
+              default:
+                return $ctx.end();
+            }
+        }, $__1, this);
+      }))();
+      after(function(done) {
+        co($traceurRuntime.initGeneratorFunction(function $__6() {
+          return $traceurRuntime.createGeneratorInstance(function($ctx) {
+            while (true)
+              switch ($ctx.state) {
+                case 0:
+                  $ctx.state = 2;
+                  return adapter.remove('prefix');
+                case 2:
+                  $ctx.maybeThrow();
+                  $ctx.state = 4;
+                  break;
+                case 4:
+                  done();
+                  $ctx.state = -2;
+                  break;
+                default:
+                  return $ctx.end();
+              }
+          }, $__6, this);
+        }))();
+      });
+    });
     it('should find a user by name', function(done) {
-      co($traceurRuntime.initGeneratorFunction(function $__0() {
+      co($traceurRuntime.initGeneratorFunction(function $__1() {
         var user;
         return $traceurRuntime.createGeneratorInstance(function($ctx) {
           while (true)
@@ -2458,11 +2544,11 @@ System.register("test-es6", [], function() {
               default:
                 return $ctx.end();
             }
-        }, $__0, this);
+        }, $__1, this);
       }))();
     });
     it('should find a user by email', function(done) {
-      co($traceurRuntime.initGeneratorFunction(function $__0() {
+      co($traceurRuntime.initGeneratorFunction(function $__1() {
         var user;
         return $traceurRuntime.createGeneratorInstance(function($ctx) {
           while (true)
@@ -2482,11 +2568,11 @@ System.register("test-es6", [], function() {
               default:
                 return $ctx.end();
             }
-        }, $__0, this);
+        }, $__1, this);
       }))();
     });
     it('should find a user by signup token', function(done) {
-      co($traceurRuntime.initGeneratorFunction(function $__0() {
+      co($traceurRuntime.initGeneratorFunction(function $__1() {
         var user;
         return $traceurRuntime.createGeneratorInstance(function($ctx) {
           while (true)
@@ -2506,11 +2592,11 @@ System.register("test-es6", [], function() {
               default:
                 return $ctx.end();
             }
-        }, $__0, this);
+        }, $__1, this);
       }))();
     });
     it('should update an existing user', function(done) {
-      co($traceurRuntime.initGeneratorFunction(function $__0() {
+      co($traceurRuntime.initGeneratorFunction(function $__1() {
         var user,
             updatedUser;
         return $traceurRuntime.createGeneratorInstance(function($ctx) {
@@ -2542,11 +2628,11 @@ System.register("test-es6", [], function() {
               default:
                 return $ctx.end();
             }
-        }, $__0, this);
+        }, $__1, this);
       }))();
     });
     it('should remove a user', function(done) {
-      co($traceurRuntime.initGeneratorFunction(function $__0() {
+      co($traceurRuntime.initGeneratorFunction(function $__1() {
         var res;
         return $traceurRuntime.createGeneratorInstance(function($ctx) {
           while (true)
@@ -2566,11 +2652,11 @@ System.register("test-es6", [], function() {
               default:
                 return $ctx.end();
             }
-        }, $__0, this);
+        }, $__1, this);
       }))();
     });
     it('should return an error when remove() cannot find a user', function(done) {
-      co($traceurRuntime.initGeneratorFunction(function $__0() {
+      co($traceurRuntime.initGeneratorFunction(function $__1() {
         var res,
             err;
         return $traceurRuntime.createGeneratorInstance(function($ctx) {
@@ -2604,7 +2690,7 @@ System.register("test-es6", [], function() {
               default:
                 return $ctx.end();
             }
-        }, $__0, this);
+        }, $__1, this);
       }))();
     });
   });
