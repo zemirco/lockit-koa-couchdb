@@ -5,6 +5,7 @@ var uuid = require('node-uuid');
 var ms = require('ms');
 var moment = require('moment');
 var nano = require('nano');
+var init = require('./utils/init.js');
 
 
 
@@ -13,13 +14,13 @@ var nano = require('nano');
  */
 class User {
 
-  constructor(name, email, password) {
+  constructor(name, email, password, tokenExpiration) {
     this.name = name;
     this.email = email;
     this.password = password;
 
     var now = moment().toDate();
-    var timespan = ms('1 day');
+    var timespan = ms(tokenExpiration);
     var future = moment().add(timespan, 'ms').toDate();
 
     this.roles = ['user'];
@@ -48,14 +49,19 @@ class Adapter {
     var url = config.db.url || config.db;
     var usersDbName = config.db.usersDbName || '_users';
     this.prefix = config.db.prefix || 'lockit/';
+    this.config = config;
     this.nano = nano({
       url: url,
       request_defaults: config.request_defaults
     });
+
     var _users = this.nano.use(usersDbName);
     this._insert = thunkify(_users.insert);
     this._get = thunkify(_users.get);
-    this._view = thunkify(_users.view);
+
+    init(_users, function(err, saved) {
+      if (err) throw err;
+    });
   }
 
 
@@ -78,7 +84,7 @@ class Adapter {
     yield insert(securityDoc, '_security');
 
     // create user document in _users db
-    var user = new User(name, email, password);
+    var user = new User(name, email, password, this.config.signup.tokenExpiration);
     var [res, headers] = yield this._insert(user, 'org.couchdb.user:' + name);
     var [doc, headers] = yield this._get(res.id);
     return doc;
@@ -94,9 +100,13 @@ class Adapter {
       var [doc, headers] = yield this._get('org.couchdb.user:' + query);
       return doc;
     }
-    var [res, headers] = yield this._view('lockit-user', match, {key: query});
+    var view = thunkify(this.nano.use('_users').view);
+    var [res, headers] = yield view('lockit-user', match, {
+      key: query,
+      include_docs: true
+    });
     if (!res.rows.length) return null
-    return res.rows[0].value;
+    return res.rows[0].doc;
   }
 
 
