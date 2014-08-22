@@ -1,10 +1,61 @@
 
 # Lockit CouchDB adapter for Koa
 
-work in progress ...
+Lockit CouchDB adapter for [Koa](https://github.com/koajs/koa).
 
-Compile with Tracuer.
+## Installation
 
 ```
-./node_modules/.bin/traceur --out prod.js --script ./node_modules/traceur/bin/traceur-runtime.js index.js
+npm install lockit-koa-couchdb
 ```
+
+## Configuration
+
+The adapter automatically saves the necessary views to your CouchDB.
+You only need the connection string in your config.js.
+
+```js
+exports.db = 'http://127.0.0.1:5984/';
+```
+
+or (long format with custom per-user-db prefix)
+
+```js
+exports.db = {
+  url: 'http://127.0.0.1:5984/',
+  prefix: 'custom/'               // default is 'lockit/'
+}
+```
+
+## Usage
+
+```js
+var co = require('co');
+var Adapter = require('lockit-koa-couchdb');
+var config = require('./config.js');
+var adapter = new Adapter(config);
+
+co(function *() {
+  var user = yield adapter.save('john', 'john@email.com', 'secret');
+})();
+```
+
+## Development
+
+Use Tracuer to compile all ECMAScript 6 code.
+
+```
+npm run compile
+```
+
+## Test
+
+Tests are also written in ECMAScript 6 and compiled on the fly.
+
+```
+npm test
+```
+
+## License
+
+MIT
