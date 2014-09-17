@@ -105,7 +105,7 @@ class Adapter {
       key: query,
       include_docs: true
     });
-    if (!res.rows.length) return null
+    if (!res.rows.length) throw new Error('not found');
     return res.rows[0].doc;
   }
 

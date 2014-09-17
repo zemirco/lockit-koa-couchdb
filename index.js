@@ -2591,9 +2591,9 @@ System.register("index-es6", [], function() {
               break;
             case 10:
               view = thunkify(this.nano.use('_users').view);
-              $ctx.state = 26;
+              $ctx.state = 23;
               break;
-            case 26:
+            case 23:
               $__20 = view('lockit-user', match, {
                 key: query,
                 include_docs: true
@@ -2616,13 +2616,11 @@ System.register("index-es6", [], function() {
               $ctx.state = 19;
               break;
             case 19:
-              $ctx.state = (!res.rows.length) ? 20 : 21;
+              if (!res.rows.length)
+                throw new Error('not found');
+              $ctx.state = 25;
               break;
-            case 20:
-              $ctx.returnValue = null;
-              $ctx.state = -2;
-              break;
-            case 21:
+            case 25:
               $ctx.returnValue = res.rows[0].doc;
               $ctx.state = -2;
               break;
